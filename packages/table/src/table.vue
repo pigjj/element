@@ -244,6 +244,10 @@
           return [];
         }
       },
+      treeCheckBox: {
+        type: Boolean,
+        default: true
+      },
 
       size: String,
 
@@ -668,7 +672,8 @@
         indent: this.indent,
         lazy: this.lazy,
         lazyColumnIdentifier: hasChildren,
-        childrenColumnName: children
+        childrenColumnName: children,
+        treeCheckBox: this.treeCheckBox
       });
       const layout = new TableLayout({
         store: this.store,

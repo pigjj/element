@@ -172,26 +172,24 @@ export default Vue.extend({
       const { data = [], selection } = states;
       // when only some rows are selected (but not all), select or deselect all of them
       // depending on the value of selectOnIndeterminate
-      const value = states.selectOnIndeterminate
-        ? !states.isAllSelected
-        : !(states.isAllSelected || selection.length);
+      const value = states.selectOnIndeterminate ? !states.isAllSelected : !(states.isAllSelected || selection.length);
       states.isAllSelected = value;
-
-      let selectionChanged = false;
-      data.forEach((row, index) => {
-        if (states.selectable) {
-          if (states.selectable.call(null, row, index) && toggleRowStatus(selection, row, value)) {
-            selectionChanged = true;
+      if (states.treeCheckBox) { // 这里
+        let selectionChanged = false;
+        data.forEach((row, index) => {
+          if (states.selectable) {
+            if (states.selectable.call(null, row, index) && toggleRowStatus(selection, row, value)) {
+              selectionChanged = true;
+            }
+          } else {
+            if (toggleRowStatus(selection, row, value)) {
+              selectionChanged = true;
+            }
           }
-        } else {
-          if (toggleRowStatus(selection, row, value)) {
-            selectionChanged = true;
-          }
+        });
+        if (selectionChanged) {
+          this.table.$emit('selection-change', selection ? selection.slice() : []);
         }
-      });
-
-      if (selectionChanged) {
-        this.table.$emit('selection-change', selection ? selection.slice() : []);
       }
       this.table.$emit('select-all', selection);
     },
